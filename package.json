@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=dota* node index.js",
+    "start": "PORT=80 DEBUG=dota* node index.js",
     "dev": "DEBUG=dota* nodemon index.js",
     "debug": "DEBUG=dota* nodemon --inspect=9229 index.js"
   },
