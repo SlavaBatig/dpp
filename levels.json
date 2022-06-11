@@ -1,0 +1,126 @@
+[
+  {
+    "exp": 0,
+    "badge": "bronze"
+  },
+  {
+    "exp": 50,
+    "badge": "bronze"
+  },
+  {
+    "exp": 350,
+    "badge": "bronze"
+  },
+  {
+    "exp": 750,
+    "badge": "bronze"
+  },
+  {
+    "exp": 1250,
+    "badge": "bronze"
+  },
+  {
+    "exp": 1850,
+    "badge": "bronze"
+  },
+  {
+    "exp": 2750,
+    "badge": "silver"
+  },
+  {
+    "exp": 3750,
+    "badge": "silver"
+  },
+  {
+    "exp": 4850,
+    "badge": "silver"
+  },
+  {
+    "exp": 6050,
+    "badge": "silver"
+  },
+  {
+    "exp": 7350,
+    "badge": "silver"
+  },
+  {
+    "exp": 8750,
+    "badge": "silver"
+  },
+  {
+    "exp": 10450,
+    "badge": "gold"
+  },
+  {
+    "exp": 12250,
+    "badge": "gold"
+  },
+  {
+    "exp": 14150,
+    "badge": "gold"
+  },
+  {
+    "exp": 16150,
+    "badge": "gold"
+  },
+  {
+    "exp": 18250,
+    "badge": "gold"
+  },
+  {
+    "exp": 20450,
+    "badge": "gold"
+  },
+  {
+    "exp": 22950,
+    "badge": "platinum"
+  },
+  {
+    "exp": 25550,
+    "badge": "platinum"
+  },
+  {
+    "exp": 28250,
+    "badge": "platinum"
+  },
+  {
+    "exp": 31050,
+    "badge": "platinum"
+  },
+  {
+    "exp": 33950,
+    "badge": "platinum"
+  },
+  {
+    "exp": 36950,
+    "badge": "platinum"
+  },
+  {
+    "exp": 40050,
+    "badge": "platinum"
+  },
+  {
+    "exp": 46850,
+    "badge": "master"
+  },
+  {
+    "exp": 50850,
+    "badge": "master"
+  },
+  {
+    "exp": 55050,
+    "badge": "master"
+  },
+  {
+    "exp": 59450,
+    "badge": "master"
+  },
+  {
+    "exp": 64050,
+    "badge": "master"
+  },
+  {
+    "exp": 72050,
+    "badge": "grandmaster"
+  }
+]

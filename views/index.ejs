@@ -1,0 +1,157 @@
+<title>D++</title>
+
+<style>
+  .form {
+    text-align: center;
+  }
+
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    margin: auto;
+  }
+
+  .submit {
+    margin-top: 48px;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 15%;
+  }
+
+  .operationalbtns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .operationalbtn {
+    margin-top: 16px;
+  }
+
+  .select {
+    margin-top: 16px;
+  }
+
+  .results {
+    margin: auto;
+    margin-top: 16px;
+    width: 50%;
+  }
+
+  .result {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+
+<script>
+  let count
+
+  const addInput = () => {
+    const form = document.getElementById('inputs')
+
+    count = form.childElementCount
+
+    form.insertAdjacentHTML(
+      'beforeend',
+      `<input class="input" id="${count + 1}" placeholder="Your id" type="text">`
+    )
+
+    count++
+  }
+
+  const removeInput = () => {
+    const el = document.getElementById(`${count}`)
+    if (!el) {
+      return
+    }
+    el.remove()
+    count--
+  }
+
+  const submit = async () => {
+    const inputstest = document.querySelectorAll('.result')
+
+    inputstest.forEach(input => input.remove())
+
+    const inputs = document.querySelectorAll('.input')
+
+    const ids = []
+
+    for (let i = 0; i < inputs.length; i++) {
+      ids.push(inputs[i].value)
+    }
+
+    const select = document.querySelector('.select')
+
+    const res = await fetch(`${document.URL}process`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        players: ids,
+        modes: [select.value]
+      })
+    })
+
+    const body = await res.json()
+
+    const resultsForm = document.querySelector('.results')
+    body.result.forEach(hero => {
+      const { name, level, img, badge } = hero
+      resultsForm.insertAdjacentHTML(
+        'beforeend',
+        `<div class="result"><span>${name}</span><img src="${img}"/><span>${level}</span><img src="${badge}"/></div>`
+      )
+    })
+  }
+</script>
+
+<div class="form">
+  <div id="inputs" class="inputs">
+    <input class="input" id="1" placeholder="Your id" type="text">
+  </div>
+  <div class="buttons">
+    <div class="operationalbtns">
+      <input class="operationalbtn" type="button" value="Add input" onclick="addInput()">
+      <input class="operationalbtn" type="button" value="Remove input" onclick="removeInput()">
+    </div>
+    <select class="select" value="all">
+      <option value="all">
+        All (Normal + Turbo)
+      </option>
+      <option value="all-normal">
+        All Normal (AP, CM, RD, SD etc)
+      </option>
+      <option value="1">
+        All Pick
+      </option>
+      <option value="23">
+        Turbo
+      </option>
+      <option value="2">
+        Captains Mode
+      </option>
+      <option value="3">
+        Random Draft
+      </option>
+      <option value="4">
+        Single Draft
+      </option>
+      <option value="5">
+        All random
+      </option>
+    </select>
+    <input class="submit" type="button" value="Submit" onclick="submit()">
+  </div>
+  <div class="results">
+  </div>
+</div>
