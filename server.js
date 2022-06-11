@@ -37,7 +37,7 @@ fastify.post('/process', async (req, res) => {
 })
 
 const start = async () => {
-  await fastify.listen({ port: PORT })
+  await fastify.listen({ port: PORT, host: '0.0.0.0' })
   debug(`Server is listening at ${PORT}`)
 }
 
