@@ -13,8 +13,8 @@ export default {
 
   EXP_NORMAL: 50,
   EXP_TURBO: 25,
-  CHALLENGE_EXP_NORMAL: 1000,
-  CHALLENGE_EXP_TURBO: 750,
+  CHALLENGE_EXP_NORMAL: 500,
+  CHALLENGE_EXP_TURBO: 375,
   WINS_FOR_CHALLENGE: 2.75,
 
   bronze: "https://i.imgur.com/qRmaCt2.png",
