@@ -1,170 +1,517 @@
-<title>D++</title>
-
-<style>
-  .form {
-    text-align: center;
-  }
-
-  .inputs {
-    display: flex;
-    flex-direction: column;
-    width: 25%;
-    margin: auto;
-  }
-
-  .submit {
-    margin-top: 48px;
-  }
-
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    width: 15%;
-  }
-
-  .operationalbtns {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .operationalbtn {
-    margin-top: 16px;
-  }
-
-  .select {
-    margin-top: 16px;
-  }
-
-  .results {
-    margin: auto;
-    margin-top: 16px;
-    width: 50%;
-  }
-
-  .result {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .note {
-    text-align: center;
-    margin-bottom: 16px;
-  }
-</style>
-
-<script>
-  let count
-
-  const addInput = () => {
-    const form = document.getElementById('inputs')
-
-    count = form.childElementCount
-
-    form.insertAdjacentHTML(
-      'beforeend',
-      `<input class="input" id="${count + 1}" placeholder="Your id" type="text">`
-    )
-
-    count++
-  }
-
-  const removeInput = () => {
-    const el = document.getElementById(`${count}`)
-    if (!el) {
-      return
-    }
-    el.remove()
-    count--
-  }
-
-  const submit = async () => {
-    const inputstest = document.querySelectorAll('.result')
-
-    inputstest.forEach(input => input.remove())
-
-    const inputs = document.querySelectorAll('.input')
-
-    const ids = []
-
-    for (let i = 0; i < inputs.length; i++) {
-      ids.push(inputs[i].value)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D++ | Dota Plus Progress Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    const select = document.querySelector('.select')
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: #e4e4e7;
+      line-height: 1.6;
+    }
 
-    const res = await fetch(`${document.URL}process`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        players: ids,
-        modes: [select.value]
-      })
-    })
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
 
-    const body = await res.json()
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-    const resultsForm = document.querySelector('.results')
-    body.result.forEach(hero => {
-      const { name, level, img, badge } = hero
-      resultsForm.insertAdjacentHTML(
-        'beforeend',
-        `<div class="result"><span>${name}</span><img src="${img}"/><span>${level}</span><img src="${badge}"/></div>`
-      )
-    })
-  }
-</script>
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c9a227 0%, #f4d03f 50%, #c9a227 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
 
-<div class="note">Note: this app counts Dota Plus challenge XP for every 4 wins. So if you have 10 wins in All Pick it's
-  gonna be 500
-  for 10 games + 500 for 10 wins + 1000 for 2 challenges.</div>
+    .subtitle {
+      color: #a1a1aa;
+      font-size: 1rem;
+    }
 
-<div class="note">
-  Another note: this app requires open Dota profile. If you try with private profile it probably just gonna crash.
-</div>
+    .notes {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+    }
 
-<div class="form">
-  <div id="inputs" class="inputs">
-    <input class="input" id="1" placeholder="Your id" type="text">
-  </div>
-  <div class="buttons">
-    <div class="operationalbtns">
-      <input class="operationalbtn" type="button" value="Add input" onclick="addInput()">
-      <input class="operationalbtn" type="button" value="Remove input" onclick="removeInput()">
+    .note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+      color: #a1a1aa;
+    }
+
+    .note:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .note:first-child {
+      padding-top: 0;
+    }
+
+    .note-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background: rgba(201, 162, 39, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #c9a227;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #d4d4d8;
+    }
+
+    .inputs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #c9a227;
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+    }
+
+    .input::placeholder {
+      color: #71717a;
+    }
+
+    .input-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #d4d4d8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #c9a227 0%, #d4af37 100%);
+      color: #1a1a2e;
+      font-weight: 600;
+      width: 100%;
+      padding: 16px;
+      font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .select {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 20px;
+    }
+
+    .select:focus {
+      outline: none;
+      border-color: #c9a227;
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+    }
+
+    .select option {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 12px;
+    }
+
+    .results-section {
+      margin-top: 32px;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .results-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .results-count {
+      font-size: 0.875rem;
+      color: #71717a;
+    }
+
+    .results-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .result {
+      display: grid;
+      grid-template-columns: 48px 1fr auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .result:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .result-hero-img {
+      width: 48px;
+      height: 27px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .result-name {
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .result-level {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #c9a227;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .result-badge {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #71717a;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(201, 162, 39, 0.2);
+      border-top-color: #c9a227;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .result {
+        grid-template-columns: 40px 1fr auto auto;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .result-hero-img {
+        width: 40px;
+        height: 23px;
+      }
+
+      .result-name {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>D++</h1>
+      <p class="subtitle">Dota Plus Hero Level Calculator</p>
+    </header>
+
+    <div class="notes">
+      <div class="note">
+        <span class="note-icon">i</span>
+        <span>This app estimates Dota Plus challenge XP assuming a challenge is completed every 2.75 wins. Example: 10 wins in All Pick = 500 XP (games) + 500 XP (wins) + 5000 XP (5 challenges).</span>
+      </div>
+      <div class="note">
+        <span class="note-icon">!</span>
+        <span>Requires a public Dota profile. Private profiles will not work.</span>
+      </div>
     </div>
-    <select class="select" value="all">
-      <option value="all">
-        All (Normal + Turbo)
-      </option>
-      <option value="all-normal">
-        All Normal (AP, CM, RD, SD etc)
-      </option>
-      <option value="1">
-        All Pick
-      </option>
-      <option value="23">
-        Turbo
-      </option>
-      <option value="2">
-        Captains Mode
-      </option>
-      <option value="3">
-        Random Draft
-      </option>
-      <option value="4">
-        Single Draft
-      </option>
-      <option value="5">
-        All random
-      </option>
-    </select>
-    <input class="submit" type="button" value="Submit" onclick="submit()">
+
+    <div class="card">
+      <div class="form-section">
+        <div class="input-group">
+          <label>Player ID(s)</label>
+          <div id="inputs" class="inputs-container">
+            <input class="input" id="1" placeholder="Enter Steam ID or Dota 2 Friend ID" type="text">
+          </div>
+          <div class="input-actions">
+            <button class="btn btn-secondary" onclick="addInput()">+ Add Player</button>
+            <button class="btn btn-secondary" onclick="removeInput()">- Remove</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Game Mode</label>
+          <select class="select" id="mode-select">
+            <option value="all">All (Normal + Turbo)</option>
+            <option value="all-normal">All Normal (AP, CM, RD, SD, etc.)</option>
+            <option value="1">All Pick</option>
+            <option value="23">Turbo</option>
+            <option value="2">Captains Mode</option>
+            <option value="3">Random Draft</option>
+            <option value="4">Single Draft</option>
+            <option value="5">All Random</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitForm()">Calculate Hero Levels</button>
+      </div>
+    </div>
+
+    <div id="results-section" class="results-section hidden">
+      <div class="card">
+        <div class="results-header">
+          <h2 class="results-title">Hero Levels</h2>
+          <span id="results-count" class="results-count"></span>
+        </div>
+        <div id="results" class="results-grid"></div>
+      </div>
+    </div>
+
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Fetching hero data...</p>
+    </div>
+
+    <div id="error" class="error hidden"></div>
   </div>
-  <div class="results">
-  </div>
-</div>
+
+  <script>
+    let inputCount = 1;
+
+    const addInput = () => {
+      const form = document.getElementById('inputs');
+      inputCount++;
+      form.insertAdjacentHTML(
+        'beforeend',
+        `<input class="input" id="${inputCount}" placeholder="Enter Steam ID or Dota 2 Friend ID" type="text">`
+      );
+    };
+
+    const removeInput = () => {
+      if (inputCount <= 1) return;
+      const el = document.getElementById(`${inputCount}`);
+      if (el) {
+        el.remove();
+        inputCount--;
+      }
+    };
+
+    const submitForm = async () => {
+      const resultsSection = document.getElementById('results-section');
+      const resultsContainer = document.getElementById('results');
+      const resultsCount = document.getElementById('results-count');
+      const loading = document.getElementById('loading');
+      const errorEl = document.getElementById('error');
+
+      // Reset state
+      resultsSection.classList.add('hidden');
+      resultsContainer.innerHTML = '';
+      errorEl.classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      const inputs = document.querySelectorAll('.input');
+      const ids = Array.from(inputs).map(input => input.value).filter(v => v.trim());
+
+      if (ids.length === 0) {
+        loading.classList.add('hidden');
+        errorEl.textContent = 'Please enter at least one player ID.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      const select = document.getElementById('mode-select');
+
+      try {
+        const res = await fetch(`${window.location.origin}/process`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            players: ids,
+            modes: [select.value]
+          })
+        });
+
+        const body = await res.json();
+
+        loading.classList.add('hidden');
+
+        if (body.error) {
+          errorEl.textContent = body.error;
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        if (!body.result || body.result.length === 0) {
+          errorEl.textContent = 'No results found. Make sure the player ID is correct and the profile is public.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        resultsCount.textContent = `${body.result.length} heroes`;
+
+        body.result.forEach(hero => {
+          const { name, level, img, badge } = hero;
+          resultsContainer.insertAdjacentHTML(
+            'beforeend',
+            `<div class="result">
+              <img class="result-hero-img" src="${img}" alt="${name}">
+              <span class="result-name">${name}</span>
+              <span class="result-level">${level}</span>
+              <img class="result-badge" src="${badge}" alt="Badge">
+            </div>`
+          );
+        });
+
+        resultsSection.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        errorEl.textContent = 'Failed to fetch data. Please try again.';
+        errorEl.classList.remove('hidden');
+      }
+    };
+
+    // Allow Enter key to submit
+    document.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.classList.contains('input')) {
+        submitForm();
+      }
+    });
+  </script>
+</body>
+</html>

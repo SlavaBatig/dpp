@@ -490,5 +490,21 @@
   "137": {
     "name": "Primal Beast",
     "img": "/apps/dota2/images/dota_react/heroes/primal_beast.png?"
+  },
+  "138": {
+    "name": "Muerta",
+    "img": "/apps/dota2/images/dota_react/heroes/muerta.png?"
+  },
+  "131": {
+    "name": "Ring Master",
+    "img": "/apps/dota2/images/dota_react/heroes/ringmaster.png?"
+  },
+  "145": {
+    "name": "Kez",
+    "img": "/apps/dota2/images/dota_react/heroes/kez.png?"
+  },
+  "155": {
+    "name": "Largo",
+    "img": "/apps/dota2/images/dota_react/heroes/largo.png?"
   }
 }
